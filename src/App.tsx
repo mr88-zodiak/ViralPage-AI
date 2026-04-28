@@ -152,7 +152,7 @@ export default function App() {
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-800 tracking-tight">SalesForge<span className="text-blue-600">AI</span></span>
+            <span className="text-xl font-bold text-slate-800 tracking-tight">ViralPage<span className="text-blue-600">AI</span></span>
           </div>
         </nav>
         <main className="flex-1 flex items-center justify-center p-6">
@@ -192,7 +192,7 @@ export default function App() {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-slate-800 tracking-tight">SalesForge<span className="text-blue-600">AI</span></span>
+          <span className="text-xl font-bold text-slate-800 tracking-tight">ViralPage<span className="text-blue-600">AI</span></span>
         </div>
         
         <nav className="flex gap-6 items-center text-sm font-medium text-slate-600">
@@ -396,7 +396,7 @@ export default function App() {
               <div className="w-3 h-3 rounded-full bg-green-400"></div>
             </div>
             <div className="mx-auto bg-white border border-slate-300 rounded px-3 py-0.5 text-[10px] text-slate-400 w-64 text-center">
-              preview.salesforge.ai/{generatedData ? 'draft-active' : 'idle'}
+              preview.ViralPage.ai/{generatedData ? 'draft-active' : 'idle'}
             </div>
             <div className="flex items-center gap-2">
                <button className="p-1 hover:bg-slate-200 rounded transition-colors" title="Download">
