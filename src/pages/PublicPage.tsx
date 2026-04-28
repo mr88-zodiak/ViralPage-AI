@@ -50,7 +50,7 @@ export default function PublicPage() {
         </div>
         <h1 className="text-2xl font-bold text-slate-800 mb-2">{error || 'Something went wrong'}</h1>
         <p className="text-slate-500 max-w-md">The page you are looking for might have been deleted or the link is incorrect.</p>
-        <a href="/" className="mt-6 text-blue-600 font-semibold hover:underline">Go to SalesForge AI</a>
+        <a href="/" className="mt-6 text-blue-600 font-semibold hover:underline">Go to ViralPage AI</a>
       </div>
     );
   }
@@ -61,7 +61,7 @@ export default function PublicPage() {
       {/* Attribution footer */}
       <footer className="py-8 bg-slate-50 border-t border-slate-100 text-center">
         <p className="text-sm text-slate-400">
-          Generated with <span className="font-bold text-slate-600">SalesForge AI</span>
+          Generated with <span className="font-bold text-slate-600">ViralPage AI</span>
         </p>
       </footer>
     </div>
