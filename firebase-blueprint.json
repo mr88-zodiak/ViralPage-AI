@@ -1,0 +1,39 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "SalesPage": {
+      "title": "Sales Page",
+      "description": "A generated sales page and its inputs",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "inputs": { "$ref": "#/entities/GeneratorInputs" },
+        "content": { "$ref": "#/entities/SalesPageData" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "inputs", "content", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents"
+    },
+    "/sales-pages/{pageId}": {
+      "schema": "SalesPage",
+      "description": "Store of all generated sales pages"
+    }
+  }
+}
