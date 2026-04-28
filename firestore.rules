@@ -29,11 +29,12 @@ service cloud.firestore {
 
     match /sales-pages/{pageId} {
       allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if true; // Public access for landing pages
       allow create: if isSignedIn() 
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.createdAt == request.time
         && isValidId(pageId);
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
       allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
   }

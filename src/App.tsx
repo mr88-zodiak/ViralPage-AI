@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Loader2, Share2, Download, Copy, RefreshCw, LogIn, LogOut, User as UserIcon, History } from 'lucide-react';
+import { Sparkles, Loader2, Share2, Download, Copy, RefreshCw, LogIn, LogOut, User as UserIcon, History, ExternalLink, Check } from 'lucide-react';
 import { onAuthStateChanged, signInWithPopup, signOut, User } from 'firebase/auth';
-import { collection, addDoc, query, where, getDocs, serverTimestamp, orderBy, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, serverTimestamp, orderBy, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { auth, db, googleProvider, handleFirestoreError, OperationType } from './lib/firebase';
 import { generateSalesPage } from './lib/gemini';
 import { GeneratorInputs, SalesPageData } from './types';
 import SalesPagePreview from './components/SalesPagePreview';
+import PublicPage from './pages/PublicPage';
 
-export default function App() {
+function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [copySuccess, setCopySuccess] = useState(false);
   
   const [inputs, setInputs] = useState<GeneratorInputs>({
     productName: '',
@@ -82,7 +85,6 @@ export default function App() {
         const path = 'sales-pages';
         if (activePageId) {
           // Update existing
-          const { updateDoc, doc } = await import('firebase/firestore');
           await updateDoc(doc(db, path, activePageId), {
             inputs: inputs,
             content: data,
@@ -136,6 +138,14 @@ export default function App() {
     setInputs(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleCopyLink = () => {
+    if (!activePageId) return;
+    const url = `${window.location.origin}/p/${activePageId}`;
+    navigator.clipboard.writeText(url);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
+  };
+
   if (authLoading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-slate-50">
@@ -152,7 +162,7 @@ export default function App() {
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-slate-800 tracking-tight">ViralPage<span className="text-blue-600">AI</span></span>
+            <span className="text-xl font-bold text-slate-800 tracking-tight">SalesForge<span className="text-blue-600">AI</span></span>
           </div>
         </nav>
         <main className="flex-1 flex items-center justify-center p-6">
@@ -192,7 +202,7 @@ export default function App() {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-slate-800 tracking-tight">ViralPage<span className="text-blue-600">AI</span></span>
+          <span className="text-xl font-bold text-slate-800 tracking-tight">SalesForge<span className="text-blue-600">AI</span></span>
         </div>
         
         <nav className="flex gap-6 items-center text-sm font-medium text-slate-600">
@@ -395,16 +405,31 @@ export default function App() {
               <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
               <div className="w-3 h-3 rounded-full bg-green-400"></div>
             </div>
-            <div className="mx-auto bg-white border border-slate-300 rounded px-3 py-0.5 text-[10px] text-slate-400 w-64 text-center">
-              preview.ViralPage.ai/{generatedData ? 'draft-active' : 'idle'}
+            <div className="mx-auto bg-white border border-slate-300 rounded px-3 py-0.5 text-[10px] text-slate-400 w-64 text-center overflow-hidden text-ellipsis whitespace-nowrap">
+              {activePageId ? `${window.location.hostname}/p/${activePageId}` : 'preview.salesforge.ai/idle'}
             </div>
             <div className="flex items-center gap-2">
-               <button className="p-1 hover:bg-slate-200 rounded transition-colors" title="Download">
-                  <Download className="w-3.5 h-3.5 text-slate-400" />
-               </button>
-               <button className="p-1 hover:bg-slate-200 rounded transition-colors" title="Share">
-                  <Share2 className="w-3.5 h-3.5 text-slate-400" />
-               </button>
+               {activePageId && (
+                 <button 
+                  onClick={handleCopyLink}
+                  className="p-1 hover:bg-blue-50 hover:text-blue-600 rounded transition-all flex items-center gap-1.5 px-2 font-bold text-[10px]" 
+                  title="Copy Link"
+                >
+                    {copySuccess ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copySuccess ? 'Copied' : 'Share'}
+                 </button>
+               )}
+               {activePageId && (
+                 <a 
+                   href={`/p/${activePageId}`} 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="p-1 hover:bg-slate-200 rounded transition-colors" 
+                   title="Open in new tab"
+                 >
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                 </a>
+               )}
             </div>
           </div>
 
@@ -458,5 +483,16 @@ export default function App() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/p/:pageId" element={<PublicPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
